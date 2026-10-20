@@ -3,7 +3,7 @@ name: Oregon Liquor Inventory Bot
 
 on:
   schedule:
-    # GitHub Actions cron uses UTC.
+    # GitHub Actions cron uses UTC
     # 08:00 UTC = 1 AM PDT / 12 AM PST
     - cron: "0 8 * * *"
 
@@ -56,27 +56,39 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      # Restore previously saved store coordinates
       - name: Restore geocoding cache
         uses: actions/cache/restore@v4
         with:
-          path: |
-            data/
-          key: geocoding-${{ runner.os }}-${{ matrix.zip_code }}-${{ github.run_id }}
+          path: data/geocode_cache.json
+          key: geocoding-${{ runner.os }}-${{ matrix.zip_code }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             geocoding-${{ runner.os }}-${{ matrix.zip_code }}-
 
+      # Download OLCC inventory, check stock, and send email
       - name: Run OLCC inventory bot
         run: |
           python main.py "${{ matrix.zip_code }}" "${{ matrix.radius }}"
 
+      # Save coordinates for future workflow runs
       - name: Save geocoding cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: |
-            data/
-          key: geocoding-${{ runner.os }}-${{ matrix.zip_code }}-${{ github.run_id }}
+          path: data/geocode_cache.json
+          key: geocoding-${{ runner.os }}-${{ matrix.zip_code }}-${{ github.run_id }}-${{ github.run_attempt }}
 
+      # Downloadable copy of the geocoding cache
+      - name: Upload geocoding cache for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: geocode-cache-${{ matrix.zip_code }}
+          path: data/geocode_cache.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      # Downloadable execution logs and email preview
       - name: Upload execution logs
         if: always()
         uses: actions/upload-artifact@v4
