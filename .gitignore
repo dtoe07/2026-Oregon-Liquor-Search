@@ -1,0 +1,27 @@
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+
+# Credentials
+.env
+.env.*
+!.env.example
+
+# Downloaded inventory
+data/
+*.csv
+*.part
+
+# Generated output
+maps/
+last_email.txt
+logfile.txt
+*.log
+
+# Geocoding cache
+*geocode*cache*
+*geocod*cache*
