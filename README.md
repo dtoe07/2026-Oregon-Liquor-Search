@@ -110,8 +110,10 @@ Each matrix job restores and saves its geocoding cache. After each run, the
 workflow uploads the cache and the generated `logfile.txt` and
 `last_email.txt` as artifacts for up to seven days.
 
-The scheduled time is expressed in UTC. Update the workflow cron expression
-if the desired local delivery time changes with daylight saving time.
+The scheduled time is expressed in UTC. The workflow runs at minute 7 to avoid
+the top-of-the-hour congestion that can delay GitHub Actions scheduled runs.
+Update the workflow cron expression if the desired local delivery time changes
+with daylight saving time.
 
 ## Data and geocoding notes
 

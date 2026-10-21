@@ -3,8 +3,8 @@ name: Oregon Liquor Inventory Bot
 
 on:
   schedule:
-    # GitHub Actions cron uses UTC
-    - cron: "0 14 * * *" # 7:00 AM Los Angeles (PDT)
+    # GitHub Actions cron uses UTC. Avoid minute 0, which is often delayed.
+    - cron: "7 14 * * *" # 7:07 AM Oregon (PDT)
 
   workflow_dispatch:
 
