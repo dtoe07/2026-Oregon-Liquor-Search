@@ -27,8 +27,10 @@ jobs:
         include:
           - zip_code: "97015"
             radius: "30"
+            delay_seconds: 0
           - zip_code: "97223"
             radius: "30"
+            delay_seconds: 300
 
     env:
       LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -64,6 +66,7 @@ jobs:
       # Download OLCC inventory, check stock, and send email
       - name: Run OLCC inventory bot
         run: |
+          sleep "${{ matrix.delay_seconds }}"
           python main.py "${{ matrix.zip_code }}" "${{ matrix.radius }}"
 
       # Save coordinates for future workflow runs
